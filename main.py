@@ -27,6 +27,18 @@ def read_odd_items():
             odd[i]=k[i]
     return {"odd_items": odd}
 
+@app.get("/items/range")
+def read_range_items(start:int =None,end:int =None):
+    if(end==None):
+        end=5
+    if(start==None or start<1 or start>5 or start>end or end>5 or end<1):
+        return {"Error": "Invalid Start Value"}
+    range_items={}
+    for i in k:
+        if i>=start and i<=end:
+            range_items[i]=k[i]
+    return {'range_items':range_items}
+
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str =""):
     q=k[item_id]
