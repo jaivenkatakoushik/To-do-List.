@@ -1,8 +1,14 @@
 from fastapi import FastAPI
 from todo import getTodo
+from todo import postTodo
 
 app = FastAPI()
 
+app.include_router(getTodo.router)
+app.include_router(postTodo.router)
+
+
+"""
 k={1: "one", 2: "two",3: "three",4: "four",5: "five"}
 
 @app.get("/")
@@ -44,5 +50,4 @@ def read_range_items(start:int =None,end:int =None):
 def read_item(item_id: int, q: str =""):
     q=k[item_id]
     return {"item_id": item_id, "q": q}
-
-app.include_router(getTodo.router)
+"""
