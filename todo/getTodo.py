@@ -1,17 +1,7 @@
 from fastapi import APIRouter
+from .postTodo import todo
 
 router=APIRouter()
-
-todo={
-  1:{
-    'name':'Task-1',
-    'done':True
-  },
-  2:{
-    'name':'Task-2',
-    'done':False
-  }
-}
 
 @router.get('/todo')
 def read_all_todos():
@@ -21,44 +11,34 @@ def read_all_todos():
     to[temp]={'done':todo[i]['done']}
   return to
 
-@router.get('/todo/filter/range')
-def read_by_range(start:int =None,end:int =None):
-  if((start==None and end==None) or start>end or start<0 or end<0 or end>len(todo)):
-    return {'error':'Select Correct Number'}
+@router.get('/todo/filter/')
+def read_by_range(status:bool =None,start:int =None,end:int =None):
   if(end==None):
-    end=len(todo)
+      end=len(todo)
   if(start==None):
     start=1
+  if(start>end or start<=0 or end<=0 or end>len(todo)):
+    return {'Wrong Selection':'Please'}
   to={}
-  for i in range(start,end+1):
-    temp=todo[i]['name']
-    to[temp]=todo[i]['done']
+  if(status==None):
+    for i in range(start,end+1):
+      temp=todo[i]['name']
+      to[temp]=todo[i]['done']
+  else:
+    for i in range(start,end+1):
+      if todo[i]['done']==status:
+        temp=todo[i]['name']
+        to[temp]=todo[i]['done']
   return to
 
-@router.get('/todo/{id}')
+@router.get('/todo/getById/{id}')
 def read_by_id(id:int =None):
   for i in todo:
     if i==id:
       return todo[i]
   return {'error':'There is No record'}
 
-
-@router.get('/todo/status/{done}')
-def read_by_value(done:bool =True):
-  if(done.lower()!='true' and done.lower()!='false'):
-    return {'error':'wrong Selection'}
-  if(done.lower()=='true'):
-    done=True
-  if(done.lower()=='false'):
-    done=False
-  to={}
-  for i in todo:
-    if(todo[i]['done']==done):
-      temp=todo[i]['name']
-      to[temp]=todo[i]['done']
-  return to
-
-@router.get('/todo/filter/getByName/{name}')
+@router.get('/todo/getByName/{name}')
 def read_by_name(name: str=None):
   if(name==None):
     return {'error':'Select a Name'}
